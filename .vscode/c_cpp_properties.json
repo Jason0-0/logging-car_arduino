@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "name": "Arduino",
+            "includePath": [
+                "D:\\Develop\\Arduino\\tools\\**",
+                "D:\\Develop\\Arduino\\hardware\\arduino\\avr\\**",
+                "${workspaceFolder}\\**"
+            ],
+            "forcedInclude": [
+                "D:\\Develop\\Arduino\\hardware\\arduino\\avr\\cores\\arduino\\Arduino.h"
+            ]
+        }
+    ],
+    "version": 4
+}

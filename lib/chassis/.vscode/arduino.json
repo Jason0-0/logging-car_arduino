@@ -1,0 +1,7 @@
+{
+    "programmer": "ArduinoISP",
+    "board": "arduino:avr:mega",
+    "sketch": "motor.ino",
+    "port": "COM6",
+    "configuration": "cpu=atmega2560"
+}
