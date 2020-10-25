@@ -174,6 +174,11 @@ inline void Arm::getCurrentPlace()
     //留着写平台的
 }
 
+/**
+ * @brief 置物平台切换
+ * 
+ * @param ID 标志当前需要转到夹爪可抓取位置的盘子ID号（1或2）
+ */
 inline void Arm::turnTo(char ID)
 {
     if (ID=1)
