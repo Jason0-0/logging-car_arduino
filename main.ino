@@ -9,26 +9,38 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   top.servoInit(4,6,7,10,11);
+  delay(500);
+  
 }
 
 
 void loop() {
   // put your main code here, to run repeatedly:
-
-  //delay(5000);
-  //top.grabIt();
- // top.moveWrist(90);
-  top.moveArm(60);
-  top.turnTo(2);
-  Serial.println("grab!");
+  Serial.println("1. turn wrist.");
+  top.moveWrist(45);
+  delay(1000);
+  Serial.println("2. move arms down.");
+  top.moveArm(-10);
+  delay(3000);
+  Serial.println("3. grab!");
+  top.grabIt();
+  delay(1000);
+  Serial.println("4. rise arms.");
+  top.moveArm(45);
+  delay(1000);
+  Serial.println("5. turn wrist.");
+  top.moveWrist(210);
+  delay(1000);
+  Serial.println("6. down arms.");
+  top.moveArm(10);
+  delay(1000);
+  Serial.println("7. place.");
+  top.loosenIt();
   delay(2000);
- // top.loosenIt();
- // top.moveWrist(45);
-  top.turnTo(1);
-  top.moveArm(100);
-  Serial.println("loosen!");
+  Serial.println("0. reset.");
+  top.moveArm(90);
+  top.moveWrist(0);
   delay(2000);
-  //Serial.println("eeee");
 
 }
 

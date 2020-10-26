@@ -25,7 +25,7 @@
 #define BR_BIAS_ANGLE (90)
 #define GRAB_ZERO_ANGLE 40       //夹爪爪
 #define TOP_ZERO_ANGLE 0
-#define PLATFORM_ZERO_ANGLE 40   //放置平台(ID1)
+#define PLATFORM_ZERO_ANGLE 60   //放置平台(ID1)
 #define PLATFORM_ID1_ANGLE 40
 #define PLATFORM_ID2_ANGLE 160
 #define GRAB_LOOSE_ANGLE 40      //夹爪抓取和放开对应的舵机转角
@@ -151,7 +151,11 @@ inline void Arm::moveArm(long angle)
     {
         armAngle=angle;
     }
-
+    // while (bottomR_s.read()!=BR_BIAS_ANGLE-ANGLE((ARM_MAX_ANGLE-armAngle)))
+    // {
+        
+    // }
+    
     bottomL_s.write(BL_BIAS_ANGLE+ANGLE((ARM_MAX_ANGLE-armAngle)));
     bottomR_s.write(BR_BIAS_ANGLE-ANGLE((ARM_MAX_ANGLE-armAngle)));
     //delay(10*)
@@ -161,7 +165,7 @@ inline void Arm::moveArm(long angle)
 inline void Arm::moveWrist(long angle)
 {
     wristAngle=angle;
-    while (top_s.read()!=wristAngle)
+    while (top_s.read()!=ANGLE(wristAngle))
     {
         top_s.write(top_s.read()+(wristAngle>top_s.read()?1:(-1)));
         delay(5);
