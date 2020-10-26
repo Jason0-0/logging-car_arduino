@@ -25,11 +25,11 @@
 #define BR_BIAS_ANGLE (90)
 #define GRAB_ZERO_ANGLE 40       //夹爪爪
 #define TOP_ZERO_ANGLE 0
-#define PLATFORM_ZERO_ANGLE 45   //放置平台(ID1)
-#define PLATFORM_ID1_ANGLE 45
+#define PLATFORM_ZERO_ANGLE 40   //放置平台(ID1)
+#define PLATFORM_ID1_ANGLE 40
 #define PLATFORM_ID2_ANGLE 160
 #define GRAB_LOOSE_ANGLE 40      //夹爪抓取和放开对应的舵机转角
-#define GRAB_TIGHT_ANGLE 18
+#define GRAB_TIGHT_ANGLE 16
 
 
 #include <Servo.h>
@@ -51,6 +51,7 @@ private:
     int currentPlatform;    //当前处于可被抓取位置的平台（待考虑
     //bool platformReady;
     inline long ANGLE(long realAngle);   //用于实际270°舵机与arduino Servo库默认的0~180°角度值映射转换
+    //void inline StepRun(long angle);
 public:
     Arm();   
     void grabIt();  
@@ -94,8 +95,8 @@ inline void Arm::servoInit(int blPin,int brPin,int grabPin,int topPin,int platfo
     platform_s.attach(platformPin);
 
     //让舵机定位到初始位置
-    bottomL_s.write(ANGLE(BL_BIAS_ANGLE));
-    bottomR_s.write(ANGLE(BR_BIAS_ANGLE));
+    bottomL_s.write((BL_BIAS_ANGLE));
+    bottomR_s.write((BR_BIAS_ANGLE));
     top_s.write(ANGLE(TOP_ZERO_ANGLE));
     platform_s.write(ANGLE(PLATFORM_ZERO_ANGLE));
     grab_s.write(ANGLE(GRAB_ZERO_ANGLE));       //40
@@ -121,12 +122,13 @@ inline void Arm::grabIt()
 }
 inline void Arm::loosenIt()
 {
-//    for (int i = grab_s.read(); i < GRAB_LOOSE_ANGLE; i=i+1)
-//    {
-//        /* code */
-//    }
+   for (int i = grab_s.read(); i < GRAB_LOOSE_ANGLE; i=i+1)
+   {
+       grab_s.write(i);
+       delay(10);
+   }
     
-    grab_s.write((GRAB_LOOSE_ANGLE));
+    //grab_s.write((GRAB_LOOSE_ANGLE));
 }
 
 /**
@@ -159,7 +161,14 @@ inline void Arm::moveArm(long angle)
 inline void Arm::moveWrist(long angle)
 {
     wristAngle=angle;
-    top_s.write(wristAngle);
+    while (top_s.read()!=wristAngle)
+    {
+        top_s.write(top_s.read()+(wristAngle>top_s.read()?1:(-1)));
+        delay(5);
+    }
+    
+    
+    //top_s.write(wristAngle);
 }
 inline long Arm::ANGLE(long realAngle)
 {
@@ -181,18 +190,19 @@ inline void Arm::getCurrentPlace()
  */
 inline void Arm::turnTo(char ID)
 {
-    if (ID=1)
+    if (ID==1)
     {
         platform_s.write(PLATFORM_ID1_ANGLE); 
         platform_ID=1;  
     }
-    else if (ID=2)
+    else if (ID==2)
     {
         platform_s.write(PLATFORM_ID2_ANGLE);
         platform_ID=2;
     }
     
 }
+
 
 
 

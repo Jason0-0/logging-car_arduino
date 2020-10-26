@@ -3,51 +3,6 @@
 #include "Arm.h"
 #include "Servo.h"
 
-//#define SERVO_MAX_ANGLE 270     //舵机最大转角
-//#define ARM_MAX_ANGLE 90       //大臂最大转角（绝对角位置）
-//#define ARM_MIN_ANGLE (-15)     //大臂最小转角（以底盘平面为0°）
-//#define WRIST_MAX_ANGLE 270     //腕部最大转角（暂时是最大舵机转角，0°位置为手臂平面）
-//
-////#define ARM_BIAS_ANGLE 90
-//#define WRIST_ZERO_ANGLE 0
-//#define BL_BIAS_ANGLE (86)     //大臂舵机的中位角
-//#define BR_BIAS_ANGLE (90)
-//#define GRAB_ZERO_ANGLE 40       //夹爪爪
-//#define TOP_ZERO_ANGLE 0
-//#define PLATFORM_ZERO_ANGLE 45   //放置平台(ID1)
-//#define PLATFORM_ID1_ANGLE 45
-//#define PLATFORM_ID2_ANGLE 160
-//#define GRAB_LOOSE_ANGLE 40      //夹爪抓取和放开对应的舵机转角
-//#define GRAB_TIGHT_ANGLE 18
- 
-//chassis littleCar()
-//class Arm
-//{
-//private:
-//    Servo bottomL_s;    //底部大臂的两个舵机
-//    Servo bottomR_s;
-//    Servo grab_s;       //抓取机构
-//    Servo top_s;        //腕部
-//    Servo platform_s;   //平台
-//    char platform_ID;   //标记当前位于可抓取位置的盘子ID
-//    bool isGrab;        //用于标志当前夹爪状态
-//    long armAngle;      //大臂相对底盘平面的角位置
-//    //long current_armAngle;
-//    long wristAngle;    //腕部相对大臂的角位置
-//    //long current_wristAngle;
-//    int currentPlatform;    //当前处于可被抓取位置的平台（待考虑
-//    //bool platformReady;
-//    inline long ANGLE(long realAngle);   //用于实际270°舵机与arduino Servo库默认的0~180°角度值映射转换
-//public:
-//    Arm(int blPin,int brPin,int grabPin,int topPin,int platformPin);   
-//    void grabIt();  
-//    void loosenIt();
-//    void turnTo(char ID);
-//    void moveArm(long angle);
-//    void moveWrist(long angle);
-//    void getCurrentPlace(); //获取当前平台、大臂、手腕的角位置（也有可能用不上
-//    
-//};
 
 Arm top;
 void setup() {
@@ -59,11 +14,18 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  
-  top.grabIt();
+
+  //delay(5000);
+  //top.grabIt();
+ // top.moveWrist(90);
+  top.moveArm(60);
+  top.turnTo(2);
   Serial.println("grab!");
   delay(2000);
-  top.loosenIt();
+ // top.loosenIt();
+ // top.moveWrist(45);
+  top.turnTo(1);
+  top.moveArm(100);
   Serial.println("loosen!");
   delay(2000);
   //Serial.println("eeee");
