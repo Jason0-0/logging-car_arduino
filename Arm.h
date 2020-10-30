@@ -20,11 +20,11 @@
 #define WRIST_MAX_ANGLE 270     //腕部最大转角（暂时是最大舵机转角，0°位置为手臂平面）
 
 //#define ARM_BIAS_ANGLE 90
-#define WRIST_ZERO_ANGLE 0
+//#define WRIST_ZERO_ANGLE 0
 #define BL_BIAS_ANGLE (86)     //大臂舵机的中位角
 #define BR_BIAS_ANGLE (90)
 #define GRAB_ZERO_ANGLE 40       //夹爪爪
-#define TOP_ZERO_ANGLE 0
+#define TOP_ZERO_ANGLE 59
 #define PLATFORM_ZERO_ANGLE 60   //放置平台(ID1)
 #define PLATFORM_ID1_ANGLE 40
 #define PLATFORM_ID2_ANGLE 160
@@ -59,7 +59,7 @@ public:
     void turnTo(char ID);
     void moveArm(long angle);
     void moveWrist(long angle);
-    void getCurrentPlace(); //获取当前平台、大臂、手腕的角位置（也有可能用不上
+    void getCurrentArm(); //获取当前平台、大臂、手腕的角位置（也有可能用不上
     void servoInit(int blPin,int brPin,int grabPin,int topPin,int platformPin);
     
 };
@@ -68,7 +68,7 @@ inline Arm::Arm()
 {
     
     armAngle=ARM_MAX_ANGLE;     //大臂举高到与底盘垂直（90°
-    wristAngle=WRIST_ZERO_ANGLE;    //腕部与大臂平行（0°
+    wristAngle=TOP_ZERO_ANGLE;    //腕部与大臂平行（0°
     //
     isGrab=false;
     
@@ -165,14 +165,14 @@ inline void Arm::moveArm(long angle)
 inline void Arm::moveWrist(long angle)
 {
     wristAngle=angle;
-    while (top_s.read()!=ANGLE(wristAngle))
-    {
-        top_s.write(top_s.read()+(wristAngle>top_s.read()?1:(-1)));
-        delay(5);
-    }
+//    while (top_s.read()!=ANGLE(wristAngle))
+//    {
+//        top_s.write(top_s.read()+(wristAngle>top_s.read()?1:(-1)));
+//        delay(5);
+//    }
     
     
-    //top_s.write(wristAngle);
+    top_s.write(ANGLE(wristAngle));
 }
 inline long Arm::ANGLE(long realAngle)
 {
@@ -180,7 +180,7 @@ inline long Arm::ANGLE(long realAngle)
     return map(realAngle,SERVO_MAX_ANGLE,0,180,0);
 }
 
-inline void Arm::getCurrentPlace()
+inline void Arm::getCurrentArm()
 {
     armAngle=map(bottomR_s.read(),180,0,SERVO_MAX_ANGLE,0)-(BR_BIAS_ANGLE-ARM_MAX_ANGLE);
     wristAngle=map(top_s.read(),180,0,SERVO_MAX_ANGLE,0);
