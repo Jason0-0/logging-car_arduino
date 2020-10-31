@@ -12,7 +12,7 @@ const long arm_camera_angle = 90;      //用到摄像头识别时抬起的角度
 const long wrist_grab_angle = 59;
 const long wrist_place_angle = 225;
 const long wrist_camera_angle = 59;
-const int delaytime = 500;
+const int delaytime = 1000;
 const int servoDelay = 10;
 const long wrist_hold_angle=140; //两次连续夹取之间腕部停驻的角度（避免打到地上的和车上的物料
 
@@ -22,10 +22,12 @@ void setup() {
   Serial.begin(9600);
   top.servoInit(4,6,7,10,11);
   delay(500);
+  Serial.println("ready!");
   
 }
 void loop()
 {
+  
   switch (ch)
   {
   case 'a':
@@ -47,9 +49,12 @@ void loop()
     Serial.println("Done 3 !");
     ch=0;
     break;
+  case 0:
+    /*nothing*/
+    break;
   
   default:
-    ch=0;
+    ch=5;
     Serial.println("0. reset.");
     top.moveArm(90);
     top.moveWrist(TOP_ZERO_ANGLE);

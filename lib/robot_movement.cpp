@@ -1,4 +1,5 @@
-#include "robot_movement.h"
+//#include "robot_movement.h"
+#include <Arduino.h>
 //#include "Arm.h"
 
 //const identify
@@ -143,7 +144,7 @@ void Place(char ID)
         top.loosenIt();
         delay(delaytime);
         top.moveArm(arm_smallRise_angle);
-        top.wristAngle(wrist_hold_angle);
+        top.moveWrist(wrist_hold_angle);
         delay(delaytime);
         break;
     case 1:
@@ -151,7 +152,7 @@ void Place(char ID)
         top.loosenIt();
         delay(delaytime);
 
-        
+
     
     default:
         break;

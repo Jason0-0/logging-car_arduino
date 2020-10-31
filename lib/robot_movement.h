@@ -1,3 +1,5 @@
+#define ROBOT_MOVEMENT_H_
+
 #ifndef ROBOT_MOVEMENT_H_
 #define ROBOT_MOVEMENT_H_
 
