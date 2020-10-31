@@ -1,9 +1,6 @@
-//#include "chassis.h"
-//#include "motor.h"
-#include "Arm.h"
-#include "Servo.h"
+#include "robot_movement.h"
+//#include "Arm.h"
 
-char ch = 0;
 //const identify
 const long arm_grab_angle = -10;
 const long arm_place_angle = 59;
@@ -16,64 +13,6 @@ const int delaytime = 500;
 const int servoDelay = 10;
 const long wrist_hold_angle=140; //两次连续夹取之间腕部停驻的角度（避免打到地上的和车上的物料
 
-void loop()
-{
-  switch (ch)
-  {
-  case 'a':
-    Serial.println("第一次夹取...");
-    firstGrab();
-    Serial.println("Done 1 !");
-    ch=0;
-    break;
-
-  case 'b':
-    Serial.println("第二次夹取...");
-    secondGrab();
-    Serial.println("Done 2 !");
-    ch=0;
-    break;
-  case 'c':
-    Serial.println("第三次夹取...");
-    thirdGrab();
-    Serial.println("Done 3 !");
-    ch=0;
-    break;
-  
-  default:
-    ch=0;
-    Serial.println("0. reset.");
-    top.moveArm(90);
-    top.moveWrist(TOP_ZERO_ANGLE);
-    top.turnTo((char)1);
-    top.loosenIt();
-    delay(2000);
-    break;
-  }
-
-}
-
-
-void serialEvent()
-{
-  
-  //  int buf=0;
-  //  while(Serial.available())
-  //  {
-  //    buf=buf*10+((char)Serial.read()-'0');
-  //    delay(2);
-  //  }
-  //  setPos=buf;
-  //Serial.println(buf);
-  while (Serial.available())
-  {
-    ch = (char)Serial.read();
-  }
-  // if (ch == 'b')
-  //   flag = true;
-  // else if (ch == 's')
-  //   flag = false;
-}
 
 void firstGrab()
 {
@@ -191,6 +130,17 @@ void thirdGrab()
   delay(delaytime);
   
   //考虑就这样一直拿着。。。
+}
 
-
+void Place(char ID)
+{
+    switch (ID)
+    {
+    case 0:
+        /* code */
+        break;
+    
+    default:
+        break;
+    }
 }

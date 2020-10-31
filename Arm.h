@@ -28,6 +28,7 @@
 #define PLATFORM_ZERO_ANGLE 60   //放置平台(ID1)
 #define PLATFORM_ID1_ANGLE 40
 #define PLATFORM_ID2_ANGLE 160
+#define PLATFORM_ID0_ANGLE 100
 #define GRAB_LOOSE_ANGLE 40      //夹爪抓取和放开对应的舵机转角
 #define GRAB_TIGHT_ANGLE 16
 
@@ -203,6 +204,11 @@ inline void Arm::turnTo(char ID)
     {
         platform_s.write(PLATFORM_ID2_ANGLE);
         platform_ID=2;
+    }
+    else if (ID==0) //所有盘子离开可抓取位置
+    {
+        platform_s.write(PLATFORM_ID0_ANGLE);
+        platform_ID=0;
     }
     
 }
