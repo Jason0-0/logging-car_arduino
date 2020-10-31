@@ -1,92 +1,19 @@
-//#include "chassis.h"
-//#include "motor.h"
-#include "Arm.h"
-#include "Servo.h"
+//#include "robot_movement.h"
+#include <Arduino.h>
+//#include "Arm.h"
 
-char ch = 0;
 //const identify
 const long arm_grab_angle = -10;
-const long arm_place_angle = 3;
+const long arm_place_angle = 59;
 const long arm_smallRise_angle = 15; //微微抬起以避免夹爪舵机干涉
 const long arm_camera_angle = 90;      //用到摄像头识别时抬起的角度
 const long wrist_grab_angle = 59;
 const long wrist_place_angle = 225;
 const long wrist_camera_angle = 59;
-const int delaytime = 300;
+const int delaytime = 500;
 const int servoDelay = 10;
 const long wrist_hold_angle=140; //两次连续夹取之间腕部停驻的角度（避免打到地上的和车上的物料
 
-Arm top;
-void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(9600);
-  top.servoInit(4,6,7,10,11);
-  delay(500);
-  Serial.println("ready!");
-  
-}
-void loop()
-{
-  
-  switch (ch)
-  {
-  case 'a':
-    Serial.println("第一次夹取...");
-    firstGrab();
-    Serial.println("Done 1 !");
-    ch=0;
-    break;
-
-  case 'b':
-    Serial.println("第二次夹取...");
-    secondGrab();
-    Serial.println("Done 2 !");
-    ch=0;
-    break;
-  case 'c':
-    Serial.println("第三次夹取...");
-    thirdGrab();
-    Serial.println("Done 3 !");
-    ch=0;
-    break;
-  case 0:
-    /*nothing*/
-    break;
-  
-  default:
-    ch=5;
-    Serial.println("0. reset.");
-    top.moveArm(90);
-    top.moveWrist(TOP_ZERO_ANGLE);
-    top.turnTo((char)1);
-    top.loosenIt();
-    delay(2000);
-    break;
-  }
-
-}
-
-
-void serialEvent()
-{
-  
-  //  int buf=0;
-  //  while(Serial.available())
-  //  {
-  //    buf=buf*10+((char)Serial.read()-'0');
-  //    delay(2);
-  //  }
-  //  setPos=buf;
-  //Serial.println(buf);
-  while (Serial.available())
-  {
-    ch = (char)Serial.read();
-  }
-  // if (ch == 'b')
-  //   flag = true;
-  // else if (ch == 's')
-  //   flag = false;
-}
 
 void firstGrab()
 {
@@ -202,10 +129,32 @@ void thirdGrab()
   //3.夹取
   top.grabIt();
   delay(delaytime);
-  top.moveArm(arm_smallRise_angle);
-  delay(delaytime);
   
   //考虑就这样一直拿着。。。
+}
+
+void Place(char ID)
+{
+    switch (ID)
+    {
+    case 0:
+        top.turnTo(0);
+        top.moveArm(arm_grab_angle);
+        delay(delaytime);
+        top.loosenIt();
+        delay(delaytime);
+        top.moveArm(arm_smallRise_angle);
+        top.moveWrist(wrist_hold_angle);
+        delay(delaytime);
+        break;
+    case 1:
+        top.turnTo(1);
+        top.loosenIt();
+        delay(delaytime);
 
 
+    
+    default:
+        break;
+    }
 }

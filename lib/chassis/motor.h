@@ -55,19 +55,21 @@ inline void motor::SetSpeed(int myspeed)
         digitalWrite(d1Pin,HIGH);
         digitalWrite(d2Pin,LOW);
     }
-    else    //speed=0
+    else    //speed=0 ,no brake
     {
         analogWrite(sPin,speed); //speed should be 0
+        digitalWrite(d1Pin,LOW);
+        digitalWrite(d2Pin,LOW);
         direction=direction;
     }
 }
-    
+    //刹车，但保留以前的速度
     inline void motor::motorStop()
     {
         //speed=0; //或者是仅刹车但保留之前设置的速度？
-        analogWrite(sPin,0);
-        digitalWrite(d1Pin,LOW);
-        digitalWrite(d2Pin,LOW);
+        //analogWrite(sPin,0);
+        digitalWrite(d1Pin,HIGH);
+        digitalWrite(d2Pin,HIGH);
         direction='s';
     }
 
