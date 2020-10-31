@@ -6,13 +6,13 @@
 char ch = 0;
 //const identify
 const long arm_grab_angle = -10;
-const long arm_place_angle = 59;
+const long arm_place_angle = 3;
 const long arm_smallRise_angle = 15; //微微抬起以避免夹爪舵机干涉
 const long arm_camera_angle = 90;      //用到摄像头识别时抬起的角度
 const long wrist_grab_angle = 59;
 const long wrist_place_angle = 225;
 const long wrist_camera_angle = 59;
-const int delaytime = 1000;
+const int delaytime = 300;
 const int servoDelay = 10;
 const long wrist_hold_angle=140; //两次连续夹取之间腕部停驻的角度（避免打到地上的和车上的物料
 
@@ -201,6 +201,8 @@ void thirdGrab()
   delay(delaytime);
   //3.夹取
   top.grabIt();
+  delay(delaytime);
+  top.moveArm(arm_smallRise_angle);
   delay(delaytime);
   
   //考虑就这样一直拿着。。。
