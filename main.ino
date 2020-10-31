@@ -16,6 +16,14 @@ const int delaytime = 500;
 const int servoDelay = 10;
 const long wrist_hold_angle=140; //两次连续夹取之间腕部停驻的角度（避免打到地上的和车上的物料
 
+Arm top;
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  top.servoInit(4,6,7,10,11);
+  delay(500);
+  
+}
 void loop()
 {
   switch (ch)

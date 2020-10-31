@@ -137,8 +137,21 @@ void Place(char ID)
     switch (ID)
     {
     case 0:
-        /* code */
+        top.turnTo(0);
+        top.moveArm(arm_grab_angle);
+        delay(delaytime);
+        top.loosenIt();
+        delay(delaytime);
+        top.moveArm(arm_smallRise_angle);
+        top.wristAngle(wrist_hold_angle);
+        delay(delaytime);
         break;
+    case 1:
+        top.turnTo(1);
+        top.loosenIt();
+        delay(delaytime);
+
+        
     
     default:
         break;
