@@ -1,10 +1,10 @@
-//#include "robot_movement.h"
+#include "robot_movement.h"
 #include <Arduino.h>
 //#include "Arm.h"
 
 //const identify
 const long arm_grab_angle = -10;
-const long arm_place_angle = 59;
+const long arm_place_angle = 3;
 const long arm_smallRise_angle = 15; //微微抬起以避免夹爪舵机干涉
 const long arm_camera_angle = 90;      //用到摄像头识别时抬起的角度
 const long wrist_grab_angle = 59;
@@ -133,6 +133,11 @@ void thirdGrab()
   //考虑就这样一直拿着。。。
 }
 
+/**
+ * @brief 放物料
+ * 
+ * @param ID 物料的ID，对应此时盘上的（1，2）以及拿着的（0）
+ */
 void Place(char ID)
 {
     switch (ID)
