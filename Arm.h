@@ -60,6 +60,7 @@ public:
     void loosenIt();
     void turnTo(char ID);
     void moveArm(long angle);
+    void moveArm(long angle,int step,bool isForward);
     void moveWrist(long angle);
     void getCurrentArm(); //获取当前平台、大臂、手腕的角位置（也有可能用不上
     void servoInit(int blPin,int brPin,int grabPin,int topPin,int platformPin);
@@ -162,6 +163,47 @@ inline void Arm::moveArm(long angle)
     bottomR_s.write(BR_BIAS_ANGLE-ANGLE((ARM_MAX_ANGLE-armAngle)));
     //delay(10*)
       
+}
+/**
+ * @brief 重载moveArm以便大角度时定速转动
+ * 
+ * @param angle 绝对角度
+ * @param step  每转动1°的时延（ms）
+ * @param isForward 方向，true为角度增加，false为角度减小
+ * 
+ * @todo 考虑取消最后一个isForward参数，代以用angle和armAngle判断正反
+ */
+void Arm::moveArm(long angle,int step,bool isForward)
+{
+     if (angle>ARM_MAX_ANGLE)  //越界处理
+    {
+        angle=ARM_MAX_ANGLE;
+    }
+    else if(angle<ARM_MIN_ANGLE)
+    {
+        angle=ARM_MIN_ANGLE;
+    }
+    //bool isForward=(angle-armAngle>0)?true:false;
+    if (isForward)
+    {
+        for (long i = armAngle; i <= angle; i++)
+        {
+            moveArm(i);
+            delay(step);
+        }
+        //armAngle=angle;
+    }
+    else
+    {
+        for (long i = armAngle; i >= angle; i--)
+        {
+            moveArm(i);
+            delay(step);
+        }
+        //armAngle=angle; 
+    }
+    
+    
 }
 
 inline void Arm::moveWrist(long angle)
