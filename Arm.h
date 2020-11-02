@@ -2,8 +2,8 @@
  * @file Arm.h
  * @author Jason Yan
  * @brief 小车车上部机械臂夹取及储物平台运动的类 Arm定义 
- * @version 0.1
- * @date 2020-10-19
+ * @version 0.3
+ * @date 2020-11-2
  * 
  * @todo 考虑引入基于舵机返回的当前角度信息的成员变量 x_currentAngle并以此来实现对舵机转动过程的准确控制
  * 
@@ -21,14 +21,14 @@
 
 //#define ARM_BIAS_ANGLE 90
 //#define WRIST_ZERO_ANGLE 0
-#define BL_BIAS_ANGLE (86)     //大臂舵机的中位角
+#define BL_BIAS_ANGLE (88)     //大臂舵机的中位角
 #define BR_BIAS_ANGLE (90)
 #define GRAB_ZERO_ANGLE 40       //夹爪爪
 #define TOP_ZERO_ANGLE 59
 #define PLATFORM_ZERO_ANGLE 60   //放置平台(ID1)
-#define PLATFORM_ID1_ANGLE 40
+#define PLATFORM_ID1_ANGLE 42
 #define PLATFORM_ID2_ANGLE 160
-#define PLATFORM_ID0_ANGLE 100
+#define PLATFORM_ID0_ANGLE 101
 #define GRAB_LOOSE_ANGLE 40      //夹爪抓取和放开对应的舵机转角
 #define GRAB_TIGHT_ANGLE 16
 
@@ -173,7 +173,7 @@ inline void Arm::moveArm(long angle)
  * 
  * @todo 考虑取消最后一个isForward参数，代以用angle和armAngle判断正反
  */
-void Arm::moveArm(long angle,int step,bool isForward)
+inline void Arm::moveArm(long angle,int step,bool isForward)
 {
      if (angle>ARM_MAX_ANGLE)  //越界处理
     {
