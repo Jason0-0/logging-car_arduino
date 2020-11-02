@@ -6,13 +6,14 @@
 const long arm_grab_angle = -10;
 const long arm_place_angle = 3;
 const long arm_smallRise_angle = 15; //微微抬起以避免夹爪舵机干涉
-const long arm_camera_angle = 90;      //用到摄像头识别时抬起的角度
+const long arm_camera_angle = 40;      //用到摄像头识别时抬起的角度
 const long wrist_grab_angle = 59;
 const long wrist_place_angle = 225;
-const long wrist_camera_angle = 59;
+const long wrist_camera_angle = 24;
 const int delaytime = 500;
 const int servoDelay = 10;
 const long wrist_hold_angle=140; //两次连续夹取之间腕部停驻的角度（避免打到地上的和车上的物料
+const long arm_release_angle=-5;//放置的位置
 
 
 void firstGrab()
@@ -142,9 +143,9 @@ void Place(char ID)
 {
     switch (ID)
     {
-    case 0:
+    case 0: //默认拿着的
         top.turnTo(0);
-        top.moveArm(arm_grab_angle);
+        top.moveArm(arm_grab_angle,servoDelay,false);
         delay(delaytime);
         top.loosenIt();
         delay(delaytime);
@@ -155,10 +156,38 @@ void Place(char ID)
     case 1:
         top.turnTo(1);
         top.loosenIt();
+        top.moveWrist(wrist_hold_angle);
+        delay(10);
+        top.moveWrist(wrist_place_angle);
+        top.moveArm(arm_place_angle,servoDelay,false);
+        top.grabIt();
         delay(delaytime);
+        top.moveArm(arm_smallRise_angle);
+        delay(delaytime);
+        top.moveWrist(wrist_hold_angle);
+        top.moveArm(arm_release_angle);
+        top.moveWrist(wrist_place_angle);
+        delay(delaytime);
+        top.loosenIt();
+        break;
+    case 2:
+        top.turnTo(2);
+        top.loosenIt();
+        top.moveWrist(wrist_hold_angle);
+        delay(10);
+        top.moveWrist(wrist_place_angle);
+        top.moveArm(arm_place_angle,servoDelay,false);
+        top.grabIt();
+        delay(delaytime);
+        top.moveArm(arm_smallRise_angle);
+        delay(delaytime);
+        top.moveWrist(wrist_hold_angle);
+        top.moveArm(arm_release_angle);
+        top.moveWrist(wrist_place_angle);
+        delay(delaytime);
+        top.loosenIt();
+        break;
 
-
-    
     default:
         break;
     }
