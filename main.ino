@@ -62,6 +62,14 @@ chassis Chassis_c(&frontLeft_m, &frontRight_m, &backLeft_m, &backRight_m);
 
 /* ** class instance end ** */
 
+/* private function declear begin */
+void sensor_read();
+void rotate90(int n, int dir);
+void tracing_f(int n);
+void justify();
+void rotate_temp();
+/* private function declear end */
+
 void setup() {
   // Serial setup
   Serial.begin(9600);    //computer
@@ -86,12 +94,125 @@ void setup() {
 }
 void loop()
 {
+ //--------------------------驱动底盘 起步到线上-------------------------------------------------
+    sensor_read();
+   while(!data[2])
+   {
+      Chassis_c.Move(0, -40, 0);
+      sensor_read();
+   }
+Chassis_c.Stop();
+
+  //--------------------------驱动底盘 循迹到扫码区-------------------------------------------------
+tracing_f(2);
+Chassis_c.Move(40,0,0);
+delay(500);
+Chassis_c.Stop();
+
+
+
+
+//--------------------------扫码------------------------------------------------
+rotate90(1,1);
+delay(2000);
+
+//Serial.println("get!");
+//digitalWrite(openmv,HIGH);
+//Serial.println("get!");
+//  static int cnt=0;
+//  while (Serial2.available() && camFlag==false)
+//  {
+//    Serial.println("get!");
+//    
+//    camBuf[cnt%3]=char(Serial2.read());
+//    //test=int(Serial2.read()-'0'); //输出int类型
+//    //Serial.println(camBuf[cnt%3]); 
+//    cnt++;
+//    //Serial.print(cnt);Serial.print("get ");
+//    delay(2);
+//    if (cnt>30-1) 
+//    {
+//      cnt=0;
+//      //Serial.println();
+//      camFlag=true;
+//    }
+//  }
+//  digitalWrite(openmv,LOW);
+//  Serial.println(camBuf);
+////delay(2000);
+
+
+rotate_temp();
+delay(1000);
+
+//--------------------------驱动底盘 循迹到原料区-------------------------------------------------
+
+
+tracing_f(4);
+delay(500);
+rotate90(1,1);
+delay(500);
+
+justify();
+
+
+
+
+
   
+  //--------------------------视觉识别及抓取-------------------------------------------------
+
+
+ Chassis_c.Move(0,40, 0);
+  delay(1200);
+  Chassis_c.Stop();
+
+  delay(500);
+  Chassis_c.Move(0,-40,0);
+  delay(2400);
+  Chassis_c.Stop();
+
+delay(1200);
+
+ Chassis_c.Move(0,40, 0);
+  delay(1200);
+  Chassis_c.Stop();
+
+while(1)//【测试用，记得删除】
+{;}
+  //--------------------------驱动底盘 从原料区到粗加工区-------------------------------------------------
+
+//delay(2000);
+//rotate90(1,-1);
+//delay(500);
+//tracing_f(1);
+//delay(500);
+//rotate90(1,-1);
+//delay(500);
+//tracing_f(3);
+//delay(500);
+//rotate90(1,1);  
+
+  //--------------------------视觉识别、放置及抓取-------------------------------------------------
+
+
+  //--------------------------驱动底盘 粗加工区到半成品区-------------------------------------------------
+
+
+  //--------------------------视觉识别及放置-------------------------------------------------
+
+
+  //--------------------------驱动底盘 从半成品区返回-------------------------------------------------
+
+
+
+  //--------------------------END-------------------------------------------------
+ 
   
 
 }
 
-
+/* interrupt callback funtion begin */
 void serialEvent()
 {
   
@@ -112,6 +233,243 @@ void serialEvent()
   // else if (ch == 's')
   //   flag = false;
 }
+
+/* interrupt callback function end */
+
+/* private function define begin */
+
+//获取传感器状态
+inline void sensor_read()
+{
+  data[0] = digitalRead(sensorPin6); //读取各传感器状态 黑线为1
+  data[1] = digitalRead(sensorPin5); //实际接线顺序是反的
+  data[2] = digitalRead(sensorPin4);
+  data[3] = digitalRead(sensorPin3);
+  data[4] = digitalRead(sensorPin2);
+  data[5] = digitalRead(sensorPin1);
+}
+
+//旋转n*90度 dir小于零则左转 大于零右转
+void rotate90(int n, int dir) 
+{
+  int count1 = 0;//对应data0
+  int temp1 = 1;
+  int count2 = 0;//对应data4
+  int temp2 = 1;
+
+  if (dir <= 0)
+  {
+    while (count1 < n || count2 < n) //左转n*90度
+    {
+      sensor_read();
+      Chassis_c.Move(0, 0, -40);
+
+      if (data[0] & !temp1)//从空地碰到黑线才计数
+      {
+        count1++;
+        temp1 = 1;
+      }
+      else if (!data[0])
+      {
+        temp1 = 0;
+      }
+
+      if (data[4] & !temp2)
+      {
+        count2++;
+        temp2 = 1;
+      }
+      else if (!data[4])
+      {
+        temp2 = 0;
+      }
+    }
+    Chassis_c.Stop();
+  }
+
+  else 
+  {
+    while (count1 < n || count2 < n) //右转n*90度
+    {
+      sensor_read();
+      Chassis_c.Move(0, 0, 40);
+
+      if (data[1] & !temp1)//从空地碰到黑线才计数
+      {
+        count1++;
+        temp1 = 1;
+      }
+      else if (!data[1])
+      {
+        temp1 = 0;
+      }
+
+      if (data[5] & !temp2)
+      {
+        count2++;
+        temp2 = 1;
+      }
+      else if (!data[5])
+      {
+        temp2 = 0;
+      }
+    }
+    Chassis_c.Stop();
+  }
+}
+
+//向前循迹，到第n根黑线停下
+void tracing_f(int n)
+  {
+    int count = 0;
+    int temp = 1;
+    while (count < n )
+    {
+      sensor_read();
+      if (data[2] == 0 & data[3] == 0) //在直线内 直行
+      {
+        Chassis_c.Move(40, 0, 0);
+        //Serial.println("foward");
+      }
+      else if (data[2] == 1  & data[3] == 1) //十字路口 直行
+      {
+        Chassis_c.Move(40, 0, 0);
+        //Serial.println("foward");
+      }
+      else if (data[2] == 1  & data[3] == 0) //右偏 原地左转
+      {
+        delay(50);
+        sensor_read();
+        if (data[2] == 1  & data[3] == 0)//延时检测，避免误差
+        {
+          Chassis_c.Move(0, 0, -40);
+          delay(50);
+        }
+      }
+
+      else if (data[2] == 0  & data[3] == 1) //左偏 原地右转
+      {
+        delay(50);
+        sensor_read();
+        if (data[2] == 0  & data[3] == 1)
+        {
+          Chassis_c.Move(0, 0, 40);
+          delay(50);
+        }
+      }
+
+      if (data[1] & data[4] & !temp ) //翻转计数
+      {
+        count++;
+        temp = 1;
+      }
+
+      else if (data[1] == 0 & data[4] == 0)
+      {
+        temp = 0;
+      }
+    }
+    Chassis_c.Stop();
+  }
+
+void justify()
+{
+  sensor_read();
+  while(data[0]||data[1]||data[4]||data[5])
+  {//先调前后 再调旋转
+    if(data[0] && data[4])
+    {
+      while(data[0] && data[4])
+      {
+         Chassis_c.Move(0,0,-40);   
+        sensor_read();
+      }
+    }
+    
+    else if(data[1] && data[5])
+    {
+      while(data[1] && data[5])
+      {
+        Chassis_c.Move(0,0,40);   
+        sensor_read();
+        }
+    }
+
+    else if(data[0] && data[5]) 
+    {
+      while(data[0] && data[5])
+      {
+        Chassis_c.Move(-40,0,0);   
+        sensor_read();
+        }
+    }
+
+    else if(data[1] && data[4])
+    {
+      while(data[1] && data[4])
+      {
+        Chassis_c.Move(40,0,0);   
+        sensor_read();
+        }
+    }
+
+    else if(data[0])
+    {
+      while(data[0])
+      {
+        Chassis_c.Move(-20,0,-20);   
+        sensor_read();
+        }
+    }
+
+    else if(data[1])
+    {
+      while(data[1])
+      {
+        Chassis_c.Move(20,0,20);   
+        sensor_read();
+        }
+    }
+
+    else if(data[4])
+    {
+      while(data[4])
+      {
+        Chassis_c.Move(20,0,-20);   
+        sensor_read();
+        }
+    }
+
+    else if(data[5])
+    {
+      while(data[5])
+      {
+        Chassis_c.Move(-20,0,20);   
+        sensor_read();
+        }
+    }
+
+    else
+    {
+      Chassis_c.Stop();
+    }
+ 
+  }
+  Chassis_c.Stop(); 
+ }
+
+void rotate_temp() //【到二维码中间区，需改进】
+{
+  Chassis_c.Move(0,0,-40);
+  delay(200);
+  while(!data[2])
+  {
+      Chassis_c.Move(0,0,-40);
+  }
+  Chassis_c.Stop();
+}
+
+/* private function define end */
 
 // void firstGrab()
 // {
