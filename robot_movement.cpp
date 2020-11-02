@@ -1,6 +1,6 @@
 #include "robot_movement.h"
 #include <Arduino.h>
-//#include "Arm.h"
+#include "Arm.h"
 
 //const identify
 const long arm_grab_angle = -10;
@@ -13,7 +13,9 @@ const long wrist_camera_angle = 24;
 const int delaytime = 500;
 const int servoDelay = 10;
 const long wrist_hold_angle=140; //两次连续夹取之间腕部停驻的角度（避免打到地上的和车上的物料
-const long arm_release_angle=-5;//放置的位置
+const long arm_release_angle=-10;//放置的位置
+const long arm_bigRise_angle=60;
+const long wrist_release_angle=50;
 
 
 void firstGrab()
@@ -145,45 +147,51 @@ void Place(char ID)
     {
     case 0: //默认拿着的
         top.turnTo(0);
-        top.moveArm(arm_grab_angle,servoDelay,false);
+        top.moveWrist(wrist_release_angle);
+        top.moveArm(arm_release_angle,servoDelay,false);
+     
         delay(delaytime);
         top.loosenIt();
         delay(delaytime);
-        top.moveArm(arm_smallRise_angle);
-        top.moveWrist(wrist_hold_angle);
-        delay(delaytime);
+//        top.moveArm(arm_smallRise_angle);
+//        top.moveWrist(wrist_hold_angle);
+//        delay(delaytime);
         break;
     case 1:
         top.turnTo(1);
         top.loosenIt();
-        top.moveWrist(wrist_hold_angle);
-        delay(10);
+        top.moveArm(arm_bigRise_angle);
+        delay(150);
         top.moveWrist(wrist_place_angle);
+        delay(150);
         top.moveArm(arm_place_angle,servoDelay,false);
         top.grabIt();
         delay(delaytime);
-        top.moveArm(arm_smallRise_angle);
+        top.moveArm(arm_bigRise_angle);
         delay(delaytime);
-        top.moveWrist(wrist_hold_angle);
-        top.moveArm(arm_release_angle);
-        top.moveWrist(wrist_place_angle);
-        delay(delaytime);
+        top.moveWrist(wrist_hold_angle);  //防止干涉
+        top.turnTo(0);
+        top.moveArm(arm_release_angle,servoDelay,false);
+        top.moveWrist(wrist_release_angle);
+        delay(1000);
         top.loosenIt();
         break;
     case 2:
         top.turnTo(2);
-        top.loosenIt();
-        top.moveWrist(wrist_hold_angle);
-        delay(10);
+         top.loosenIt();
+        top.moveArm(arm_bigRise_angle);
+        delay(delaytime);
         top.moveWrist(wrist_place_angle);
+        delay(delaytime);
         top.moveArm(arm_place_angle,servoDelay,false);
         top.grabIt();
         delay(delaytime);
-        top.moveArm(arm_smallRise_angle);
+        top.moveArm(arm_bigRise_angle);
         delay(delaytime);
         top.moveWrist(wrist_hold_angle);
-        top.moveArm(arm_release_angle);
-        top.moveWrist(wrist_place_angle);
+         top.turnTo(0);
+        top.moveArm(arm_release_angle,servoDelay,false);
+        top.moveWrist(wrist_release_angle);
         delay(delaytime);
         top.loosenIt();
         break;
