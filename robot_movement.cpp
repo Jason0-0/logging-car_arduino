@@ -153,18 +153,19 @@ void Place(char ID)
         delay(delaytime);
         top.loosenIt();
         delay(delaytime);
-//        top.moveArm(arm_smallRise_angle);
-//        top.moveWrist(wrist_hold_angle);
-//        delay(delaytime);
+        //抬升到下一次的准备位置
+        // top.moveArm(arm_bigRise_angle);
+        // //top.moveWrist(wrist_hold_angle);
+        // delay(delaytime);
         break;
     case 1:
         top.turnTo(1);
         top.loosenIt();
-        top.moveArm(arm_bigRise_angle);
+        top.moveArm(arm_bigRise_angle); //前往不干涉的位置
         delay(150);
-        top.moveWrist(wrist_place_angle);
+        top.moveWrist(wrist_place_angle); //转到取件的位置
         delay(150);
-        top.moveArm(arm_place_angle,servoDelay,false);
+        top.moveArm(arm_place_angle,servoDelay,false);  //机械臂向下到达取件位置
         top.grabIt();
         delay(delaytime);
         top.moveArm(arm_bigRise_angle);
@@ -175,6 +176,10 @@ void Place(char ID)
         top.moveWrist(wrist_release_angle);
         delay(1000);
         top.loosenIt();
+        // delay(1000);
+        // top.moveArm(arm_bigRise_angle);
+        // delay(delaytime);
+
         break;
     case 2:
         top.turnTo(2);
@@ -199,4 +204,20 @@ void Place(char ID)
     default:
         break;
     }
+}
+
+bool CameraState()
+{
+  top.moveArm(arm_camera_angle,servoDelay,true);
+  top.moveWrist(wrist_camera_angle);
+  delay(delaytime);
+  return true;
+}
+
+bool ArmWait()
+{
+  top.moveArm(arm_bigRise_angle);
+  delay(delaytime);
+  top.moveWrist(wrist_hold_angle);
+  delay(delaytime);
 }

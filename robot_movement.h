@@ -17,6 +17,9 @@ extern const long wrist_camera_angle ;
 extern const int delaytime ;
 extern const int servoDelay ;
 extern const long wrist_hold_angle; //两次连续夹取之间腕部停驻的角度（避免打到地上的和车上的物料
+extern const long arm_release_angle;
+extern const long arm_bigRise_angle;
+extern const long wrist_release_angle;
 
 extern Arm top;
 
@@ -26,5 +29,7 @@ void secondGrab();
 void thirdGrab();
 
 void Place(char ID);
+bool CameraState();
+bool ArmWait();
 
 #endif // !ROBOT_MOVEMENT_H_

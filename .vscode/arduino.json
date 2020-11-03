@@ -1,7 +1,6 @@
 {
     "programmer": "ArduinoISP",
-    "board": "arduino:avr:mega",
-    "configuration": "cpu=atmega2560",
+    "board": "arduino:avr:uno",
     "sketch": "main.ino",
-    "port": "COM7"
+    "port": "COM4"
 }
