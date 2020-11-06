@@ -20,16 +20,20 @@ extern const long wrist_hold_angle; //两次连续夹取之间腕部停驻的角
 extern const long arm_release_angle;
 extern const long arm_bigRise_angle;
 extern const long wrist_release_angle;
+extern const long arm_moving_angle;  //行走过程中为了平衡重心...
+extern const long wrist_moving_angle;
+
 
 extern Arm top;
 
 
-void firstGrab();
-void secondGrab();
-void thirdGrab();
-
+// void firstGrab();
+// void secondGrab();
+// void thirdGrab();
+void Grab(char ID);
 void Place(char ID);
 bool CameraState();
 bool ArmWait();
+bool MovingState();
 
 #endif // !ROBOT_MOVEMENT_H_
